@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkAttend - Daftar Karyawan</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Inter,Segoe UI,Arial,sans-serif;
+}
+
+:root{
+    --primary:#6366f1;
+    --primary2:#8b5cf6;
+    --dark:#111827;
+    --text:#1e293b;
+    --muted:#64748b;
+    --bg:#f4f7fb;
+    --white:#fff;
+    --border:#e7eaf0;
+    --red:#ef4444;
+    --green:#10b981;
+}
+
+body{
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--text);
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    width:245px;
+    background:linear-gradient(180deg,#111827,#1e1b4b);
+    color:white;
+    padding:25px 16px;
+    z-index:20;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:5px 10px 30px;
+}
+
+.brand-logo{
+    width:43px;
+    height:43px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:13px;
+    background:linear-gradient(135deg,#6366f1,#8b5cf6);
+    font-size:22px;
+}
+
+.brand h2{
+    font-size:18px;
+}
+
+.brand p{
+    color:#a5b4fc;
+    font-size:10px;
+    margin-top:2px;
+    letter-spacing:1px;
+}
+
+.menu-title{
+    color:#64748b;
+    font-size:10px;
+    font-weight:bold;
+    padding:0 12px 10px;
+    letter-spacing:1px;
+}
+
+.menu{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.menu-item{
+    padding:13px 14px;
+    border-radius:11px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    color:#cbd5e1;
+    font-size:13px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.menu-item:hover{
+    background:rgba(255,255,255,.08);
+    color:white;
+}
+
+.menu-item.active{
+    background:linear-gradient(
+        90deg,
+        rgba(99,102,241,.8),
+        rgba(139,92,246,.5)
+    );
+    color:white;
+}
+
+.menu-icon{
+    width:23px;
+    text-align:center;
+    font-size:17px;
+}
+
+.sidebar-bottom{
+    position:absolute;
+    left:16px;
+    right:16px;
+    bottom:22px;
+    padding:14px;
+    border-radius:14px;
+    background:rgba(255,255,255,.06);
+}
+
+.user-mini{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.user-avatar{
+    width:37px;
+    height:37px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#6366f1;
+    border-radius:10px;
+    font-weight:bold;
+}
+
+.user-mini strong{
+    display:block;
+    font-size:12px;
+}
+
+.user-mini span{
+    color:#94a3b8;
+    font-size:10px;
+}
+
+/* MAIN */
+
+.main{
+    margin-left:245px;
+    min-height:100vh;
+}
+
+/* TOPBAR */
+
+.topbar{
+    height:76px;
+    background:white;
+    border-bottom:1px solid var(--border);
+    padding:0 35px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.page-title h1{
+    font-size:22px;
+}
+
+.page-title p{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:4px;
+}
+
+.clock-box{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.clock-icon{
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#eef2ff;
+    color:#6366f1;
+}
+
+#clock{
+    font-weight:bold;
+    font-size:15px;
+}
+
+#dateNow{
+    font-size:10px;
+    color:var(--muted);
+    margin-top:2px;
+}
+
+/* CONTENT */
+
+.content{
+    padding:30px 35px 50px;
+    max-width:1450px;
+}
+
+/* WELCOME */
+
+.welcome{
+    position:relative;
+    overflow:hidden;
+    padding:28px;
+    border-radius:20px;
+    color:white;
+    background:linear-gradient(
+        120deg,
+        #4f46e5,
+        #7c3aed,
+        #6366f1
+    );
+    box-shadow:0 15px 35px rgba(79,70,229,.22);
+    margin-bottom:25px;
+}
+
+.welcome h2{
+    font-size:25px;
+}
+
+.welcome p{
+    margin-top:7px;
+    color:#ddd6fe;
+    font-size:13px;
+}
+
+.welcome-date{
+    margin-top:20px;
+    display:inline-block;
+    padding:7px 12px;
+    background:rgba(255,255,255,.13);
+    border-radius:20px;
+    font-size:11px;
+}
+
+/* STAT */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:17px;
+    margin-bottom:25px;
+}
+
+.stat{
+    background:white;
+    padding:20px;
+    border-radius:17px;
+    border:1px solid var(--border);
+    box-shadow:0 7px 22px rgba(15,23,42,.04);
+}
+
+.stat-icon{
+    width:43px;
+    height:43px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:13px;
+    font-size:20px;
+    background:#eef2ff;
+    color:#6366f1;
+}
+
+.stat-label{
+    color:var(--muted);
+    font-size:11px;
+    margin-top:15px;
+}
+
+.stat-number{
+    font-size:29px;
+    font-weight:800;
+    margin-top:4px;
+}
+
+/* GRID */
+
+.employee-grid{
+    display:grid;
+    grid-template-columns:380px 1fr;
+    gap:22px;
+    align-items:start;
+}
+
+.card{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:18px;
+    box-shadow:0 7px 25px rgba(15,23,42,.04);
+    padding:23px;
+}
+
+.card-header{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    margin-bottom:21px;
+}
+
+.card-header-icon{
+    width:40px;
+    height:40px;
+    border-radius:11px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#eef2ff;
+    color:#6366f1;
+    font-size:18px;
+}
+
+.card-header h3{
+    font-size:17px;
+}
+
+.card-header p{
+    font-size:11px;
+    color:var(--muted);
+    margin-top:3px;
+}
+
+/* FORM */
+
+.form-group{
+    margin-bottom:16px;
+}
+
+.form-group label{
+    display:block;
+    color:#334155;
+    font-size:11px;
+    font-weight:700;
+    margin-bottom:7px;
+}
+
+.input{
+    position:relative;
+}
+
+.input span{
+    position:absolute;
+    left:13px;
+    top:50%;
+    transform:translateY(-50%);
+    pointer-events:none;
+}
+
+.input input,
+.input select{
+    width:100%;
+    height:43px;
+    border:1px solid #e2e8f0;
+    border-radius:10px;
+    outline:none;
+    background:#f8fafc;
+    padding:0 12px 0 38px;
+    color:#1e293b;
+    font-size:12px;
+}
+
+.input input:focus,
+.input select:focus{
+    border-color:#6366f1;
+    background:white;
+    box-shadow:0 0 0 4px rgba(99,102,241,.08);
+}
+
+.btn-primary{
+    width:100%;
+    height:45px;
+    border:0;
+    border-radius:11px;
+    color:white;
+    background:linear-gradient(135deg,#6366f1,#8b5cf6);
+    font-weight:bold;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.btn-primary:hover{
+    transform:translateY(-2px);
+}
+
+/* TABLE */
+
+.table-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+}
+
+.data-count{
+    color:#64748b;
+    background:#f1f5f9;
+    padding:7px 11px;
+    border-radius:20px;
+    font-size:10px;
+}
+
+.search{
+    width:230px;
+    height:38px;
+    border:1px solid #e2e8f0;
+    border-radius:9px;
+    padding:0 12px;
+    outline:none;
+    font-size:11px;
+    margin-bottom:15px;
+}
+
+.search:focus{
+    border-color:#6366f1;
+}
+
+.table-container{
+    overflow-x:auto;
+    border:1px solid var(--border);
+    border-radius:13px;
+}
+
+table{
+    width:100%;
+    min-width:650px;
+    border-collapse:collapse;
+}
+
+thead{
+    background:#f8fafc;
+}
+
+th{
+    padding:13px;
+    color:#64748b;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    text-align:center;
+    border-bottom:1px solid var(--border);
+}
+
+td{
+    padding:13px;
+    font-size:11px;
+    text-align:center;
+    border-bottom:1px solid #f1f5f9;
+}
+
+tbody tr:hover{
+    background:#fafbff;
+}
+
+.employee{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    text-align:left;
+}
+
+.employee-avatar{
+    width:34px;
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:9px;
+    background:#eef2ff;
+    color:#6366f1;
+    font-weight:bold;
+}
+
+.employee-name{
+    font-weight:700;
+    color:#334155;
+}
+
+.employee-small{
+    font-size:9px;
+    color:#94a3b8;
+    margin-top:2px;
+}
+
+.status{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:9px;
+    font-weight:bold;
+    background:#ecfdf5;
+    color:#059669;
+}
+
+.actions{
+    display:flex;
+    justify-content:center;
+    gap:5px;
+}
+
+.action-btn{
+    border:0;
+    width:30px;
+    height:30px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.edit{
+    color:#2563eb;
+    background:#eff6ff;
+}
+
+.delete{
+    color:#dc2626;
+    background:#fef2f2;
+}
+
+.action-btn:hover{
+    transform:translateY(-2px);
+}
+
+.empty{
+    padding:45px 15px;
+    text-align:center;
+    color:#94a3b8;
+}
+
+.empty-icon{
+    font-size:38px;
+    margin-bottom:10px;
+}
+
+.empty h4{
+    color:#64748b;
+    font-size:14px;
+    margin-bottom:5px;
+}
+
+.empty p{
+    font-size:10px;
+}
+
+.footer{
+    margin-top:25px;
+    text-align:center;
+    color:#94a3b8;
+    font-size:10px;
+}
+
+/* MOBILE */
+
+@media(max-width:1050px){
+
+    .sidebar{
+        width:75px;
+        padding:20px 10px;
+    }
+
+    .brand{
+        justify-content:center;
+    }
+
+    .brand-text,
+    .menu-title,
+    .menu-text,
+    .sidebar-bottom{
+        display:none;
+    }
+
+    .menu-item{
+        justify-content:center;
+        padding:13px;
+    }
+
+    .main{
+        margin-left:75px;
+    }
+
+    .employee-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:750px){
+
+    .topbar{
+        padding:0 18px;
+    }
+
+    .content{
+        padding:20px 15px 40px;
+    }
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .clock-box{
+        display:none;
+    }
+}
+
+@media(max-width:500px){
+
+    .sidebar{
+        display:none;
+    }
+
+    .main{
+        margin-left:0;
+    }
+
+    .content{
+        padding:15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="brand">
+
+        <div class="brand-logo">
+            ✓
+        </div>
+
+        <div class="brand-text">
+
+            <h2>WorkAttend</h2>
+            <p>WORK MANAGEMENT</p>
+
+        </div>
+
+    </div>
+
+    <div class="menu-title">
+        MENU UTAMA
+    </div>
+
+    <div class="menu">
+        
+        <a href="bew.html" > 
+
+        <div class="menu-item">
+            <div class="menu-icon">🏠</div>
+            <span class="menu-text">Dashboard</span>
+        </div>
+        </a>
+         
+        <a href="absensi.html">
+        <div class="menu-item">
+            <div class="menu-icon">📋</div>
+            <span class="menu-text">Absensi</span>
+        </div>
+        </a>
+
+        <a href="karyawan.html">
+        <div class="menu-item active">
+            <div class="menu-icon">👥</div>
+            <span class="menu-text">Karyawan</span>
+        </div>
+        </a>
+
+         <a href="laporan.html">
+        <div class="menu-item">
+            <div class="menu-icon">📊</div>
+            <span class="menu-text">Laporan</span>
+        </div>
+        </a>
+
+    </div>
+
+    <div class="sidebar-bottom">
+
+        <div class="user-mini">
+
+            <div class="user-avatar">
+                A
+            </div>
+
+            <div>
+                <strong>Administrator</strong>
+                <span>Sistem Absensi</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</aside>
+
+<!-- MAIN -->
+
+<main class="main">
+
+    <div class="topbar">
+
+        <div class="page-title">
+
+            <h1>Daftar Karyawan</h1>
+
+            <p>
+                Kelola data karyawan perusahaan
+            </p>
+
+        </div>
+
+        <div class="clock-box">
+
+            <div class="clock-icon">
+                🕐
+            </div>
+
+            <div>
+
+                <div id="clock">
+                    00:00:00
+                </div>
+
+                <div id="dateNow">
+                    -
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <section class="content">
+
+        <!-- WELCOME -->
+
+        <div class="welcome">
+
+            <h2>
+                Data Karyawan 👥
+            </h2>
+
+            <p>
+                Tambahkan dan kelola daftar karyawan perusahaan.
+            </p>
+
+            <div class="welcome-date" id="welcomeDate">
+                📅 Hari ini
+            </div>
+
+        </div>
+
+        <!-- STATISTIK -->
+
+        <div class="stats">
+
+            <div class="stat">
+
+                <div class="stat-icon">
+                    👥
+                </div>
+
+                <div class="stat-label">
+                    TOTAL KARYAWAN
+                </div>
+
+                <div class="stat-number" id="totalKaryawan">
+                    0
+                </div>
+
+            </div>
+
+            <div class="stat">
+
+                <div class="stat-icon">
+                    ✓
+                </div>
+
+                <div class="stat-label">
+                    KARYAWAN AKTIF
+                </div>
+
+                <div class="stat-number" id="karyawanAktif">
+                    0
+                </div>
+
+            </div>
+
+            <div class="stat">
+
+                <div class="stat-icon">
+                    💼
+                </div>
+
+                <div class="stat-label">
+                    JABATAN
+                </div>
+
+                <div class="stat-number" id="jumlahJabatan">
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- GRID -->
+
+        <div class="employee-grid">
+
+            <!-- FORM -->
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div class="card-header-icon">
+                        ➕
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Tambah Karyawan
+                        </h3>
+
+                        <p>
+                            Masukkan data karyawan baru
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        NAMA KARYAWAN
+                    </label>
+
+                    <div class="input">
+
+                        <span>👤</span>
+
+                        <input
+                            id="nama"
+                            type="text"
+                            placeholder="Contoh: Apdal">
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        JABATAN
+                    </label>
+
+                    <div class="input">
+
+                        <span>💼</span>
+
+                        <input
+                            id="jabatan"
+                            type="text"
+                            placeholder="Contoh: Staff">
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        NOMOR HP
+                    </label>
+
+                    <div class="input">
+
+                        <span>📱</span>
+
+                        <input
+                            id="nohp"
+                            type="text"
+                            placeholder="Contoh: 08123456789">
+
+                    </div>
+
+                </div>
+
+                <button
+                    class="btn-primary"
+                    onclick="tambahKaryawan()">
+
+                    ＋ Simpan Karyawan
+
+                </button>
+
+            </div>
+
+            <!-- TABLE -->
+
+            <div class="card">
+
+                <div class="table-top">
+
+                    <div class="card-header" style="margin:0">
+
+                        <div class="card-header-icon">
+                            👥
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Daftar Karyawan
+                            </h3>
+
+                            <p>
+                                Data karyawan perusahaan
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="data-count" id="jumlahData">
+                        0 data
+                    </div>
+
+                </div>
+
+                <input
+                    class="search"
+                    id="search"
+                    type="text"
+                    placeholder="🔎 Cari nama karyawan..."
+                    oninput="tampilkan()">
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>NO</th>
+                                <th>NAMA KARYAWAN</th>
+                                <th>JABATAN</th>
+                                <th>NO HP</th>
+                                <th>STATUS</th>
+                                <th>AKSI</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="tabelKaryawan"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="footer">
+            WorkAttend © 2026 • Data karyawan tersimpan otomatis di browser
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+
+/* DATA */
+
+let dataKaryawan =
+JSON.parse(
+    localStorage.getItem("workAttendKaryawan")
+) || [];
+
+
+/* CLOCK */
+
+function updateClock(){
+
+    const now = new Date();
+
+    document.getElementById("clock")
+    .textContent =
+    now.toLocaleTimeString("id-ID");
+
+    const date =
+    now.toLocaleDateString(
+        "id-ID",
+        {
+            weekday:"long",
+            day:"numeric",
+            month:"long",
+            year:"numeric"
+        }
+    );
+
+    document.getElementById("dateNow")
+    .textContent = date;
+
+    document.getElementById("welcomeDate")
+    .textContent = "📅 " + date;
+
+}
+
+setInterval(updateClock,1000);
+updateClock();
+
+
+/* TAMBAH KARYAWAN */
+
+function tambahKaryawan(){
+
+    const nama =
+    document.getElementById("nama")
+    .value.trim();
+
+    const jabatan =
+    document.getElementById("jabatan")
+    .value.trim();
+
+    const nohp =
+    document.getElementById("nohp")
+    .value.trim();
+
+
+    if(nama === ""){
+
+        alert("⚠ Silakan masukkan nama karyawan.");
+
+        document.getElementById("nama").focus();
+
+        return;
+    }
+
+
+    if(jabatan === ""){
+
+        alert("⚠ Silakan masukkan jabatan karyawan.");
+
+        document.getElementById("jabatan").focus();
+
+        return;
+    }
+
+
+    const data = {
+
+        id:Date.now(),
+
+        nama:nama,
+
+        jabatan:jabatan,
+
+        nohp:nohp,
+
+        status:"Aktif"
+
+    };
+
+
+    dataKaryawan.push(data);
+
+    simpan();
+
+    tampilkan();
+
+    kosongkan();
+
+
+    alert("✅ Karyawan berhasil ditambahkan!");
+
+}
+
+
+/* TAMPILKAN */
+
+function tampilkan(){
+
+    const tbody =
+    document.getElementById("tabelKaryawan");
+
+    const search =
+    document.getElementById("search")
+    .value
+    .toLowerCase();
+
+    tbody.innerHTML="";
+
+
+    const hasil =
+    dataKaryawan.filter(
+        data =>
+        data.nama
+        .toLowerCase()
+        .includes(search)
+    );
+
+
+    if(hasil.length === 0){
+
+        tbody.innerHTML = `
+
+        <tr>
+
+            <td colspan="6">
+
+                <div class="empty">
+
+                    <div class="empty-icon">
+                        👥
+                    </div>
+
+                    <h4>
+                        Belum ada karyawan
+                    </h4>
+
+                    <p>
+                        Tambahkan karyawan melalui form di sebelah kiri.
+                    </p>
+
+                </div>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    }
+
+
+    hasil.forEach((data,index)=>{
+
+        const tr =
+        document.createElement("tr");
+
+        const huruf =
+        data.nama
+        .charAt(0)
+        .toUpperCase();
+
+
+        tr.innerHTML = `
+
+        <td>
+            ${index+1}
+        </td>
+
+        <td>
+
+            <div class="employee">
+
+                <div class="employee-avatar">
+                    ${escapeHTML(huruf)}
+                </div>
+
+                <div>
+
+                    <div class="employee-name">
+                        ${escapeHTML(data.nama)}
+                    </div>
+
+                    <div class="employee-small">
+                        Karyawan
+                    </div>
+
+                </div>
+
+            </div>
+
+        </td>
+
+        <td>
+            ${escapeHTML(data.jabatan)}
+        </td>
+
+        <td>
+            ${escapeHTML(data.nohp || "-")}
+        </td>
+
+        <td>
+
+            <span class="status">
+                ✓ Aktif
+            </span>
+
+        </td>
+
+        <td>
+
+            <div class="actions">
+
+                <button
+                    class="action-btn edit"
+                    onclick="editKaryawan(${data.id})">
+
+                    ✏
+
+                </button>
+
+                <button
+                    class="action-btn delete"
+                    onclick="hapusKaryawan(${data.id})">
+
+                    🗑
+
+                </button>
+
+            </div>
+
+        </td>
+
+        `;
+
+        tbody.appendChild(tr);
+
+    });
+
+
+    updateStatistik();
+
+}
+
+
+/* EDIT */
+
+function editKaryawan(id){
+
+    const data =
+    dataKaryawan.find(
+        item => item.id === id
+    );
+
+    if(!data) return;
+
+
+    const namaBaru =
+    prompt(
+        "Masukkan nama karyawan:",
+        data.nama
+    );
+
+    if(namaBaru === null) return;
+
+
+    const jabatanBaru =
+    prompt(
+        "Masukkan jabatan:",
+        data.jabatan
+    );
+
+    if(jabatanBaru === null) return;
+
+
+    const nohpBaru =
+    prompt(
+        "Masukkan nomor HP:",
+        data.nohp
+    );
+
+    if(nohpBaru === null) return;
+
+
+    data.nama =
+    namaBaru.trim();
+
+    data.jabatan =
+    jabatanBaru.trim();
+
+    data.nohp =
+    nohpBaru.trim();
+
+
+    simpan();
+
+    tampilkan();
+
+
+    alert("✅ Data karyawan berhasil diperbarui!");
+
+}
+
+
+/* HAPUS */
+
+function hapusKaryawan(id){
+
+    const yakin =
+    confirm(
+        "Apakah kamu yakin ingin menghapus karyawan ini?"
+    );
+
+    if(!yakin) return;
+
+
+    dataKaryawan =
+    dataKaryawan.filter(
+        item => item.id !== id
+    );
+
+
+    simpan();
+
+    tampilkan();
+
+
+    alert("🗑 Karyawan berhasil dihapus!");
+
+}
+
+
+/* STATISTIK */
+
+function updateStatistik(){
+
+    document.getElementById("totalKaryawan")
+    .textContent =
+    dataKaryawan.length;
+
+
+    document.getElementById("karyawanAktif")
+    .textContent =
+    dataKaryawan.filter(
+        item => item.status === "Aktif"
+    ).length;
+
+
+    const jabatan =
+    new Set(
+        dataKaryawan.map(
+            item => item.jabatan
+        )
+    );
+
+
+    document.getElementById("jumlahJabatan")
+    .textContent =
+    jabatan.size;
+
+
+    document.getElementById("jumlahData")
+    .textContent =
+    dataKaryawan.length + " data";
+
+}
+
+
+/* KOSONGKAN */
+
+function kosongkan(){
+
+    document.getElementById("nama")
+    .value="";
+
+    document.getElementById("jabatan")
+    .value="";
+
+    document.getElementById("nohp")
+    .value="";
+
+    document.getElementById("nama")
+    .focus();
+
+}
+
+
+/* SIMPAN */
+
+function simpan(){
+
+    localStorage.setItem(
+        "workAttendKaryawan",
+        JSON.stringify(dataKaryawan)
+    );
+
+}
+
+
+/* ESCAPE */
+
+function escapeHTML(text){
+
+    const div =
+    document.createElement("div");
+
+    div.textContent=text;
+
+    return div.innerHTML;
+
+}
+
+
+/* START */
+
+tampilkan();
+
+</script>
+
+</body>
+</html>
